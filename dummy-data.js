@@ -1,13 +1,12 @@
-exports.human = [{
-    id: 0, 
-    name: "Alice"
-}, {
-    id: 1,
-    name: "Bob"
-}]
-
-exports.pets = [{
+exports.posts = [{
     id:0,
-    humanId: 1,
-    name: "Catty"
+    text:"Picture of guitar from dummy data"
+}, {
+    id:1,
+    text:"Second picture of guitar from dummy data"
+}]
+exports.postComments = [{
+    id: 0,
+    postId: 0,
+    comment: "Nice picture!"
 }]

@@ -4,3 +4,21 @@
     <p>Here you will see some of my favorite photos, all related to music of course!</p>
   </div>
 </div>
+
+{{#if posts.length}}
+  {{#each posts}}
+    <div class="post">
+      <img class="postImage" src="/images/{{id}}.jpg" alt="Guitar picture {{id}}">
+      <div class="postText">
+      <p>{{text}}</p>
+      </div>
+      <div class="postCommentContainer">
+        <div class="postComment">
+            <p>hey</p>
+        </div>
+      </div>
+    </div>
+  {{/each}}
+  {{else}}
+  <p>No posts available.</p>
+{{/if}}

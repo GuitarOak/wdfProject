@@ -10,16 +10,21 @@ app.engine(
     defaultLayout: 'main.hbs',
   }),
 )
+app.use(express.static("/images/"));
 
 app.get('/', function (request, response) {
   const model = {
     humans: dummyData.humans,
+    posts: dummyData.posts,
+    comments: dummyData.postComments
   }
   response.render('home.hbs', model)
 })
 app.get('/views/home.hbs', function (request, response) {
   const model = {
     humans: dummyData.humans,
+    posts: dummyData.posts,
+    comments: dummyData.postComments
    }
   response.render('home.hbs', model)
 })
