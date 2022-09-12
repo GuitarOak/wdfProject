@@ -35,4 +35,10 @@ app.get('/views/contact.hbs', function (request, response) {
   }
   response.render('contact.hbs', model)
 })
+app.get('/views/login.hbs', function (request, response) {
+    const model = {
+      humans: dummyData.humans,
+    }
+    response.render('login.hbs', model)
+  })
 app.listen(8080)
