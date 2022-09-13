@@ -1,24 +1,72 @@
-<div class="hero bg-primary">
-  <div class="hero-body">
-    <h1>Welcome</h1>
-    <p>Here you will see some of my favorite photos, all related to music of course!</p>
+<div class="container">
+  <div class="columns">
+    <div class="column col-9 col-mx-auto ">
+      <div class="carousel">
+    <!-- carousel locator -->
+    <input class="carousel-locator" id="slide-1" type="radio" name="carousel-radio" hidden="" checked="">
+    <input class="carousel-locator" id="slide-2" type="radio" name="carousel-radio" hidden="">
+    <input class="carousel-locator" id="slide-3" type="radio" name="carousel-radio" hidden="">
+    <input class="carousel-locator" id="slide-4" type="radio" name="carousel-radio" hidden="">
+    
+    <!-- carousel container -->
+    <div class="carousel-container">
+      <!-- carousel item -->
+      <figure class="carousel-item">
+        <label class="item-prev btn btn-action btn-lg" for="slide-4"><i class="icon icon-arrow-left"></i></label>
+        <label class="item-next btn btn-action btn-lg" for="slide-2"><i class="icon icon-arrow-right"></i></label>
+        <img class="img-responsive rounded" src="/img/1.jpg" alt="guitar">
+      </figure>
+      <figure class="carousel-item">
+        <label class="item-prev btn btn-action btn-lg" for="slide-1"><i class="icon icon-arrow-left"></i></label>
+        <label class="item-next btn btn-action btn-lg" for="slide-3"><i class="icon icon-arrow-right"></i></label>
+        <img class="img-responsive rounded" src="/img/2.jpg" alt="guitar">
+      </figure>
+      <figure class="carousel-item">
+        <label class="item-prev btn btn-action btn-lg" for="slide-2"><i class="icon icon-arrow-left"></i></label>
+        <label class="item-next btn btn-action btn-lg" for="slide-4"><i class="icon icon-arrow-right"></i></label>
+        <img class="img-responsive rounded" src="/img/3.jpg" alt="macOS El Capitan Wallpaper">
+      </figure>
+      <figure class="carousel-item">
+        <label class="item-prev btn btn-action btn-lg" for="slide-3"><i class="icon icon-arrow-left"></i></label>
+        <label class="item-next btn btn-action btn-lg" for="slide-1"><i class="icon icon-arrow-right"></i></label>
+        <img class="img-responsive rounded" src="/img/4.jpg" alt="macOS El Capitan Wallpaper">
+      </figure>
+    </div>
+    <!-- carousel navigation -->
+    <div class="carousel-nav">
+      <label class="nav-item text-hide c-hand" for="slide-1">1</label>
+      <label class="nav-item text-hide c-hand" for="slide-2">2</label>
+      <label class="nav-item text-hide c-hand" for="slide-3">3</label>
+      <label class="nav-item text-hide c-hand" for="slide-4">4</label>
+    </div>
+  </div>
+  </div>
   </div>
 </div>
 
 {{#if posts.length}}
   {{#each posts}}
-    <div class="post">
-      <img class="postImage" src="/images/{{id}}.jpg" alt="Guitar picture {{id}}">
-      <div class="postText">
-      <p>{{text}}</p>
-      </div>
-      <div class="postCommentContainer">
-        <div class="postComment">
-            <p>hey</p>
+    <div class='hero bg-primary'>
+      <div class='hero-body'>
+        <div class='post'>
+          <div class='postText'>
+            <p>
+              {{text}}
+            </p>
+          </div>
+          <div class='postCommentContainer'>
+            <div class='postComment'>
+              <p>
+                {{comments.comment}}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   {{/each}}
-  {{else}}
-  <p>No posts available.</p>
+{{else}}
+  <p>
+    No posts available.
+  </p>
 {{/if}}

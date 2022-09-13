@@ -10,7 +10,7 @@ app.engine(
     defaultLayout: 'main.hbs',
   }),
 )
-app.use(express.static("/images/"));
+app.use(express.static("public"));
 
 app.get('/', function (request, response) {
   const model = {
@@ -45,5 +45,11 @@ app.get('/views/login.hbs', function (request, response) {
       humans: dummyData.humans,
     }
     response.render('login.hbs', model)
+})
+app.get('/views/admin.hbs', function (request, response) {
+    const model = {
+      humans: dummyData.humans,
+    }
+    response.render('admin.hbs', model)
   })
 app.listen(8080)
