@@ -1,14 +1,14 @@
-footer{
-    display: inline;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 10%;
-    background-color: rgba(177, 177, 177, 0.308);
-    
-    text-align: center;
+footer {
+  display: inline;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 10%;
+  background-color: rgba(177, 177, 177, 0.308);
+
+  text-align: center;
 }
-#homeImg{
-    /* max-height: 10%; */
-    max-width: 50%;
+#homeImg {
+  /* max-height: 10%; */
+  max-width: 50%;
 }

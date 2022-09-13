@@ -10,13 +10,13 @@ app.engine(
     defaultLayout: 'main.hbs',
   }),
 )
-app.use(express.static("public"));
+app.use(express.static('public'))
 
 app.get('/', function (request, response) {
   const model = {
     humans: dummyData.humans,
     posts: dummyData.posts,
-    comments: dummyData.postComments
+    comments: dummyData.postComments,
   }
   response.render('home.hbs', model)
 })
@@ -24,8 +24,8 @@ app.get('/views/home.hbs', function (request, response) {
   const model = {
     humans: dummyData.humans,
     posts: dummyData.posts,
-    comments: dummyData.postComments
-   }
+    comments: dummyData.postComments,
+  }
   response.render('home.hbs', model)
 })
 app.get('/views/about.hbs', function (request, response) {
@@ -41,15 +41,17 @@ app.get('/views/contact.hbs', function (request, response) {
   response.render('contact.hbs', model)
 })
 app.get('/views/login.hbs', function (request, response) {
-    const model = {
-      humans: dummyData.humans,
-    }
-    response.render('login.hbs', model)
+  const model = {
+    humans: dummyData.humans,
+  }
+  response.render('login.hbs', model)
 })
 app.get('/views/admin.hbs', function (request, response) {
-    const model = {
-      humans: dummyData.humans,
-    }
-    response.render('admin.hbs', model)
-  })
+  const model = {
+    humans: dummyData.humans,
+    posts: dummyData.posts,
+    comments: dummyData.postComments,
+  }
+  response.render('admin.hbs', model)
+})
 app.listen(8080)

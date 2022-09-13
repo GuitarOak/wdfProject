@@ -1,3 +1,69 @@
-{{!-- 
+{{! 
 Menu with CRUD posts
- --}}
+ }}
+
+<div class='container'>
+  <div class='columns'>
+    <div class='column col-6'>
+      <h3>
+        Create new Post
+      </h3>
+
+      <div class='form-group'>
+        <label class='form-label' for='input-example-3'>
+          Message
+        </label>
+        <textarea
+          class='form-input'
+          id='input-example-3'
+          placeholder='Textarea'
+          rows='3'
+        ></textarea>
+        <button class='btn btn-primary'>
+          Post
+        </button>
+      </div>
+    </div>
+    <div class='column col-6'>
+      <h3>
+        Update/Delete existing posts
+      </h3>
+      {{#if posts.length}}
+        {{#each posts}}
+          <div class='hero bg-primary'>
+            <div class='hero-body'>
+              <div class='post'>
+                <div class='postText'>
+                  <p>
+                    {{text}}
+                  </p>
+
+                  <div class='btn-group btn-group-block'>
+                    <button class='btn'>
+                      Update Post
+                    </button>
+                    <button class='btn btn-error'>
+                      Remove Post
+                    </button>
+                  </div>
+                </div>
+                <div class='postCommentContainer'>
+                  <div class='postComment'>
+                    <p>
+                      {{comments.comment}}
+                    </p>
+                    {{! <button class="btn btn-error">Remove comment</button> }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        {{/each}}
+      {{else}}
+        <p>
+          No posts available.
+        </p>
+      {{/if}}
+    </div>
+  </div>
+</div>
