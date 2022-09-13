@@ -18,7 +18,8 @@
   "homepage": "https://github.com/GuitarOak/wdfProject#readme",
   "dependencies": {
     "express": "^4.18.1",
-    "express-handlebars": "^6.0.6"
+    "express-handlebars": "^6.0.6",
+    "sqlite3": "^5.0.11"
   },
   "description": ""
 }
