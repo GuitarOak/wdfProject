@@ -29,32 +29,13 @@ db.run("CREATE TABLE IF NOT EXISTS  'Posts' ( 'Id'	INTEGER,'Text'	TEXT NOT NULL,
 })
 
 /*
-Recieving all Posts from DB
+Recieving all Posts + Comments from DB
 */
-let allPosts;
-const selectAllPostsQuery = "SELECT Text FROM Posts"
-db.all(selectAllPostsQuery, function(error, posts){
-  if(error){
-    console.log(error)
-  }else{
-    console.log("Selected Text from posts")
-    allPosts = posts;
-  }
-})
-
-/*
-Recieving all Comments from DB
-*/
-let allComments;
-const selectAllCommentsQuery = "SELECT * FROM Comments"
-db.all(selectAllCommentsQuery, function(error, comments){
-  if (error) {
-    console.log(error)
-  }else{
-    console.log("Selected * from comments")
-    allComments = comments
-  }
-})
+let postModel = {
+  text: '',
+  comment: [''],
+};
+let allPosts = [postModel]
 
 app.use(express.static('public'))
 
@@ -66,21 +47,41 @@ app.engine(
 )
 
 app.get('/', function (request, response) {
+  
+const selectAllPostsQuery = "SELECT * FROM Posts"
+db.all(selectAllPostsQuery, async function(error, posts){
+  if(error){
+    console.log(error)
+  }else{
+    console.log("Selected all from posts", posts)
+   
+    posts.forEach(async post => {
+      postModel.text = post.Text
+      console.log("Post,text: ", post.Text)
+
+      const selectCommentForPost = "SELECT Comment FROM Comments WHERE PostID = ?"
+      
+      db.all(selectCommentForPost,post.Id, function(error,comments){
+        if(error){
+          console.log(error)
+        }else{
+          console.log("Selected comments for posts: )", comments)
+          postModel.comment = comments
+          allPosts.push("Postmodel: " , postModel)
+        }        
+      })
+    });
+
+  console.log("Allposts: ", allPosts)
+  
   const model = {
-    humans: dummyData.humans,
-    posts: allPosts,
-    comments: dummyData.postComments,
+    posts: allPosts
   }
   response.render('home.hbs', model)
-})
-app.get('/views/home.hbs', function (request, response) {
-  const model = {
-    humans: dummyData.humans,
-    posts: allPosts,
-    comments: dummyData.postComments,
   }
-  response.render('home.hbs', model)
 })
+})
+
 app.get('/views/about.hbs', function (request, response) {
  
   response.render('about.hbs')
