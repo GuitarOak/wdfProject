@@ -1,4 +1,3 @@
-
 <div class='container'>
   <div class='columns'>
     <div class='column col-8'>
@@ -18,13 +17,18 @@
           <label for="commentInput">Comment:</label>
           <input id="commentInput" type="text" placeholder="Good post, Oak!">
         </div>
+        <div><input type="button" value="submit"></div>
 
           <div class='postCommentContainer'>
+            {{#if comments.length}}
+            {{#each comments}}
             <div class='postComment'>
               <p>
-                {{comment}}
+                {{Comment}}
               </p>
             </div>
+            {{/each}}
+            {{/if}}
           </div>
 
 
