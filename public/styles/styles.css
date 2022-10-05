@@ -33,3 +33,9 @@ footer {
 .hero{
   margin-bottom: 1%;
 }
+
+.postComment{
+  max-width: 20%;
+  background-color: rgb(35, 34, 85);
+  margin-bottom: 1%;
+}

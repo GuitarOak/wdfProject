@@ -1,6 +1,8 @@
 const dummyData = require('./dummy-data')
 const express = require('express')
 const expressHandlebars = require('express-handlebars')
+const bodyParser = require('body-parser')
+const parseForm = bodyParser.urlencoded ({extended: false})
 
 const app = express()
 
@@ -21,7 +23,7 @@ db.run(
     } else {
       console.log('Comments table succesfully created if not existed')
     }
-  }
+  },
 )
 db.run(
   "CREATE TABLE IF NOT EXISTS  'Posts' ( 'Id'	INTEGER,  'Text'	TEXT NOT NULL, PRIMARY KEY('Id' AUTOINCREMENT) ) ",
@@ -31,7 +33,7 @@ db.run(
     } else {
       console.log('Posts table succesfully created if not existed')
     }
-  }
+  },
 )
 
 /*
@@ -44,7 +46,7 @@ app.engine(
   'hbs',
   expressHandlebars.engine({
     defaultLayout: 'main.hbs',
-  })
+  }),
 )
 
 app.get('/', function (request, response) {
@@ -65,7 +67,8 @@ app.get('/', function (request, response) {
               console.log(error)
             } else {
               const text = post.Text
-              allPosts.push({ text, comments })
+              const postId = post.Id
+              allPosts.push({ text, comments, postId })
             }
           })
         })
@@ -78,6 +81,23 @@ app.get('/', function (request, response) {
         }
         response.render('home.hbs', model)
       })
+    }
+  })
+})
+
+app.post('/', parseForm, function (request, response) {
+  console.log('request: ', request.body)
+  const comment = request.body.commentInput
+  const postID = request.body.postId
+  const commentValues = [comment, postID]
+  const insertCommentQuery =
+    'INSERT INTO Comments (Comment, PostId) VALUES (?, ?)'
+  db.all(insertCommentQuery, commentValues, function (error, cb) {
+    if (error) {
+      console.log(error)
+    } else {
+      console.log('¨Comment: ', comment)
+      response.redirect('/')
     }
   })
 })
