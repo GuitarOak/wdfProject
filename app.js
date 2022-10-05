@@ -119,4 +119,18 @@ app.get('/admin', function (request, response) {
   }
   response.render('admin.hbs', model)
 })
+
+app.post('/add-post', parseForm, function(request, response){
+  console.log(request.body)
+  const postInput = request.body.postInput
+  const addPostQuery = 'INSERT INTO Posts (Text) VALUES (?)'
+  db.all(addPostQuery, postInput, function(error, cb){
+    if(error){
+      console.log(error)
+      response.redirect('/admin')
+    }else{
+      response.redirect('/admin')
+    }
+  })
+}) 
 app.listen(8080)
