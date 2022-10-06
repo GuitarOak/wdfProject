@@ -37,16 +37,17 @@ Menu with CRUD posts
             <div class='hero-body'>
               <div class='post'>
                 <div class='postText'>
-                  <p>
-                    {{text}}
-                  </p>
+                  <form method='POST'action='update-post'>
+                    <textarea name="postText" id="" cols="75" rows="10">{{text}}</textarea>
+            
+                  
 
-                  <div class='btn-group btn-group-block'>
-                    <input type='hidden' name='postId' value="{{postId}}" />
-                    <button class='btn'>
-                      Update Post
-                    </button>
-
+                    <div class='btn-group btn-group-block'>
+                      <input type='hidden' name='postId' value="{{postId}}" />
+                      <button class='btn'>
+                        Update Post
+                      </button>
+                    </form>
                     <form method='POST' action='/remove-post'>
                       <input type='hidden' name='postId' value="{{postId}}" />
                       <button type='submit' class='btn btn-error'>

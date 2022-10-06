@@ -155,6 +155,21 @@ app.post('/remove-post', parseForm, function(request,response){
     }
   })
 })
+app.post('/update-post', parseForm, function(request, response){
+  console.log(request.body)
+  const postId = request.body.postId
+  const postText = request.body.postText  
+  const updatedPostValues = [postText, postId]
+  const updatePostQuery = 'Update Posts SET Text = ? WHERE Id = ?'
+  db.all(updatePostQuery, updatedPostValues, function(error, cb){
+    if(error){
+      console.log(error)
+      response.redirect('/admin')
+    }else{
+      response.redirect('/admin')
+    }
+  })
+})
 
 app.post('/add-post', parseForm, function(request, response){
   console.log(request.body)
