@@ -42,12 +42,18 @@ Menu with CRUD posts
                   </p>
 
                   <div class='btn-group btn-group-block'>
+                    <input type='hidden' name='postId' value="{{postId}}" />
                     <button class='btn'>
                       Update Post
                     </button>
-                    <button class='btn btn-error'>
-                      Remove Post
-                    </button>
+
+                    <form method='POST' action='/remove-post'>
+                      <input type='hidden' name='postId' value="{{postId}}" />
+                      <button type='submit' class='btn btn-error'>
+                        Remove Post
+                      </button>
+                    </form>
+                    
                   </div>
                 </div>
                 <div class='postCommentContainer'>
@@ -55,7 +61,6 @@ Menu with CRUD posts
                     <p>
                       {{comments.comment}}
                     </p>
-                    {{! <button class="btn btn-error">Remove comment</button> }}
                   </div>
                 </div>
               </div>

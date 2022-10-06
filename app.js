@@ -75,7 +75,6 @@ app.get('/', function (request, response) {
         resolve(allPosts)
       })
       getCommentsByPostId.then((allPosts) => {
-        console.log('test allPosts', allPosts)
         const model = {
           posts: allPosts,
         }
@@ -86,7 +85,6 @@ app.get('/', function (request, response) {
 })
 
 app.post('/', parseForm, function (request, response) {
-  console.log('request: ', request.body)
   const comment = request.body.commentInput
   const postID = request.body.postId
   const commentValues = [comment, postID]
@@ -96,7 +94,6 @@ app.post('/', parseForm, function (request, response) {
     if (error) {
       console.log(error)
     } else {
-      console.log('¨Comment: ', comment)
       response.redirect('/')
     }
   })
@@ -112,12 +109,51 @@ app.get('/login', function (request, response) {
   response.render('login.hbs')
 })
 app.get('/admin', function (request, response) {
-  const model = {
-    humans: dummyData.humans,
-    posts: dummyData.posts,
-    comments: dummyData.postComments,
-  }
-  response.render('admin.hbs', model)
+  const selectAllPostsQuery = 'SELECT * FROM Posts'
+
+  db.all(selectAllPostsQuery, function (error, posts) {
+    if (error) {
+      console.log(error)
+    } else {
+      const getCommentsByPostId = new Promise((resolve, reject) => {
+        const allPosts = []
+        posts.forEach((post) => {
+          const selectCommentForPost =
+            'SELECT Comment FROM Comments WHERE PostID = ?'
+
+          db.all(selectCommentForPost, post.Id, function (error, comments) {
+            if (error) {
+              console.log(error)
+            } else {
+              const text = post.Text
+              const postId = post.Id
+              allPosts.push({ text, comments, postId })
+            }
+          })
+        })
+        resolve(allPosts)
+      })
+      getCommentsByPostId.then((allPosts) => {
+        const model = {
+          posts: allPosts,
+        }
+        response.render('admin.hbs', model)
+      })
+    }
+  })
+})
+app.post('/remove-post', parseForm, function(request,response){
+  console.log(request.body)
+  const postId = request.body.postId
+  const removePostQuery = 'DELETE FROM Posts WHERE Id = ?'
+  db.all(removePostQuery, postId, function(error, cb){
+    if(error){
+      console.log(error)
+      response.redirect('/admin')
+    }else{
+      response.redirect('/admin')
+    }
+  })
 })
 
 app.post('/add-post', parseForm, function(request, response){
