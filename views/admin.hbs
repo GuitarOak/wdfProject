@@ -20,6 +20,7 @@ Menu with CRUD posts
             id='input-example-3'
             placeholder='Textarea'
             rows='3'
+            required
           ></textarea>
           <button type="submit" class='btn btn-primary'>
             Post
@@ -38,12 +39,12 @@ Menu with CRUD posts
               <div class='post'>
                 <div class='postText'>
                   <form method='POST'action='update-post'>
-                    <textarea name="postText" id="" cols="75" rows="10">{{text}}</textarea>
+                    <textarea name="postText" id="" cols="75" rows="10" required>{{text}}</textarea>
             
                   
 
                     <div class='btn-group btn-group-block'>
-                      <input type='hidden' name='postId' value="{{postId}}" />
+                      <input type='hidden' name='postId' value="{{postId}}"/>
                       <button class='btn'>
                         Update Post
                       </button>
