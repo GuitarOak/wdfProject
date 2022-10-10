@@ -104,6 +104,10 @@ app.get('/contact', function (request, response) {
 app.get('/login', function (request, response) {
   response.render('login.hbs')
 })
+app.post('/authenticate-login', function(request, response){
+  const email = request.body.emailInput
+  const password = request.body.passwordInput
+})
 app.get('/admin', function (request, response) {
   const selectAllPostsQuery = 'SELECT * FROM Posts'
 
@@ -123,7 +127,6 @@ app.get('/admin', function (request, response) {
             } else {
               const text = post.Text
               const postId = post.Id
-              console.log('Comments: ', comments)
               allPosts.push({ text, comments, postId })
             }
           })
@@ -140,7 +143,6 @@ app.get('/admin', function (request, response) {
   })
 })
 app.post('/remove-post', parseForm, function(request,response){
-  console.log(request.body)
   const postId = request.body.postId
   const removePostQuery = 'DELETE FROM Posts WHERE Id = ?'
   db.all(removePostQuery, postId, function(error, cb){
@@ -153,7 +155,6 @@ app.post('/remove-post', parseForm, function(request,response){
   })
 })
 app.post('/update-post', parseForm, function(request, response){
-  console.log(request.body)
   const postId = request.body.postId
   const postText = request.body.postText  
   const updatedPostValues = [postText, postId]
@@ -169,7 +170,6 @@ app.post('/update-post', parseForm, function(request, response){
 })
 
 app.post('/add-post', parseForm, function(request, response){
-  console.log(request.body)
   const postInput = request.body.postInput
   const addPostQuery = 'INSERT INTO Posts (Text) VALUES (?)'
   db.all(addPostQuery, postInput, function(error, cb){
@@ -182,7 +182,6 @@ app.post('/add-post', parseForm, function(request, response){
   })
 }) 
 app.post('/remove-comment', parseForm, function(request,response){
-  console.log(request.body)
   const commentId = request.body.commentId
   const removeCommentQuery = 'DELETE FROM Comments WHERE Id = ?'
   db.all(removeCommentQuery, commentId, function(error, cb){

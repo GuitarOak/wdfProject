@@ -1,33 +1,26 @@
 <div class='container'>
   <div class='columns'>
-    <div class='column col-3'>
-      <!-- pattern validation example for Email -->
-      <label class='form-label' for='form-input'>
-        Email
-      </label>
-      <input
-        class='form-input'
-        type='email'
-        placeholder='Email'
-        pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,14}$'
-      />
+    <form action="POST" action='/authenticate-login'>
+      <div class='column col-3'>
+        <!-- pattern validation example for Email -->
+        <label class='form-label' for='form-input'>
+          Email
+        </label>
+        <input name='emailInput' class='form-input' type='email' placeholder='Email' pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,14}$' />
 
-      <!-- pattern validation example for password (8 or more characters that are of at least one number, and one uppercase and lowercase letter) -->
-      <label class='form-label' for='form-input'>
-        Password
-      </label>
-      <input
-        class='form-input'
-        type='password'
-        placeholder='Password'
-        pattern='^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$'
-      />
+        <!-- pattern validation example for password (8 or more characters that are of at least one number, and one uppercase and lowercase letter) -->
+        <label class='form-label' for='form-input'>
+          Password
+        </label>
+        <input name='passwordInput' class='form-input' type='password' placeholder='Password'
+          pattern='^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$' />
 
-      {{! <button class="btn btn-primary">Login</button> }}
-      <a href='/admin'>
-        Login
-      </a>
-    </div>
+        {{! <button class="btn btn-primary">Login</button> }}
+        <a href='/admin'>
+          Login
+        </a>
+      </div>
+    </form>
     <div class='column col-3'></div>
   </div>
 </div>
