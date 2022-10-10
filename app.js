@@ -1,10 +1,13 @@
 const dummyData = require('./dummy-data')
 const express = require('express')
+const session = require('express-session')
 const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
 const parseForm = bodyParser.urlencoded ({extended: false})
 
 const app = express()
+// app.use(session())
+app.use(express.static('public'))
 
 const sqlite3 = require('sqlite3')
 const db = new sqlite3.Database('database.db', function (error) {
@@ -14,7 +17,6 @@ const db = new sqlite3.Database('database.db', function (error) {
     console.log('Connected to the database.')
   }
 })
-
 db.run(
   "CREATE TABLE IF NOT EXISTS  'Comments' ( 'Id'	INTEGER, 'PostId'	INTEGER, 'Comment'	TEXT NOT NULL, FOREIGN KEY('PostId') REFERENCES 'Posts'('Id'), PRIMARY KEY('Id' AUTOINCREMENT) ) ",
   function (error) {
@@ -35,12 +37,6 @@ db.run(
     }
   },
 )
-
-/*
-Recieving all Posts + Comments from DB
-*/
-
-app.use(express.static('public'))
 
 app.engine(
   'hbs',
@@ -119,7 +115,7 @@ app.get('/admin', function (request, response) {
         const allPosts = []
         posts.forEach((post) => {
           const selectCommentForPost =
-            'SELECT Comment FROM Comments WHERE PostID = ?'
+            'SELECT * FROM Comments WHERE PostID = ?'
 
           db.all(selectCommentForPost, post.Id, function (error, comments) {
             if (error) {
@@ -127,6 +123,7 @@ app.get('/admin', function (request, response) {
             } else {
               const text = post.Text
               const postId = post.Id
+              console.log('Comments: ', comments)
               allPosts.push({ text, comments, postId })
             }
           })
@@ -184,4 +181,17 @@ app.post('/add-post', parseForm, function(request, response){
     }
   })
 }) 
+app.post('/remove-comment', parseForm, function(request,response){
+  console.log(request.body)
+  const commentId = request.body.commentId
+  const removeCommentQuery = 'DELETE FROM Comments WHERE Id = ?'
+  db.all(removeCommentQuery, commentId, function(error, cb){
+    if(error){
+      console.log(error)
+      response.redirect('/admin')
+    }else{
+      response.redirect('/admin')
+    }
+  })
+})
 app.listen(8080)

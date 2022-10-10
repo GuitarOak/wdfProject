@@ -1,6 +1,6 @@
-{{! 
+{{!
 Menu with CRUD posts
- }}
+}}
 
 <div class='container'>
   <div class='columns'>
@@ -14,14 +14,8 @@ Menu with CRUD posts
           <label class='form-label' for='input-example-3'>
             New Post
           </label>
-          <textarea
-            name='postInput'
-            class='form-input'
-            id='input-example-3'
-            placeholder='Textarea'
-            rows='3'
-            required
-          ></textarea>
+          <textarea name='postInput' class='form-input' id='input-example-3' placeholder='Textarea' rows='3'
+            required></textarea>
           <button type="submit" class='btn btn-primary'>
             Post
           </button>
@@ -33,47 +27,54 @@ Menu with CRUD posts
         Update/Delete existing posts
       </h3>
       {{#if posts.length}}
-        {{#each posts}}
-          <div class='hero bg-primary'>
-            <div class='hero-body'>
-              <div class='post'>
-                <div class='postText'>
-                  <form method='POST'action='update-post'>
-                    <textarea name="postText" id="" cols="75" rows="10" required>{{text}}</textarea>
-            
-                  
-
-                    <div class='btn-group btn-group-block'>
-                      <input type='hidden' name='postId' value="{{postId}}"/>
-                      <button class='btn'>
-                        Update Post
-                      </button>
-                    </form>
-                    <form method='POST' action='/remove-post'>
-                      <input type='hidden' name='postId' value="{{postId}}" />
-                      <button type='submit' class='btn btn-error'>
-                        Remove Post
-                      </button>
-                    </form>
-                    
-                  </div>
-                </div>
-                <div class='postCommentContainer'>
-                  <div class='postComment'>
-                    <p>
-                      {{comments.comment}}
-                    </p>
-                  </div>
-                </div>
-              </div>
+      {{#each posts}}
+      <div class='hero bg-primary'>
+        <div class='hero-body'>
+          <div class='post'>
+            <div class='postText'>
+              <form method='POST' action='update-post'>
+                <textarea name="postText" id="" cols="75" rows="10" required>{{text}}</textarea>
+                <div class='btn-group btn-group-block'>
+                  <input type='hidden' name='postId' value="{{postId}}" />
+                  <button class='btn'>
+                    Update Post
+                  </button>
+              </form>
+              <form method='POST' action='/remove-post'>
+                <input type='hidden' name='postId' value="{{postId}}" />
+                <button type='submit' class='btn btn-error'>
+                  Remove Post
+                </button>
+              </form>
             </div>
           </div>
-        {{/each}}
-      {{else}}
-        <p>
-          No posts available.
-        </p>
-      {{/if}}
+          <div class='postCommentContainer'>
+            {{#if comments.length}}
+            {{#each comments}}
+            <form method='POST' action='/remove-comment'>
+              <input type='hidden' name='commentId' value="{{Id}}" />
+              <div class='postComment'>
+                <p id='comment'>
+                  {{Comment}}
+                </p>
+                <button type='submit' class='btn btn-error'>
+                  Remove comment
+                </button>
+              </div>
+
+            </form>
+            {{/each}}
+            {{/if}}
+          </div>
+        </div>
+      </div>
     </div>
+    {{/each}}
+    {{else}}
+    <p>
+      No posts available.
+    </p>
+    {{/if}}
   </div>
+</div>
 </div>
