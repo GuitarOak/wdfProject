@@ -6,7 +6,8 @@ body{
   top: 0;
   width: 100%;
   display: flex;
-  background-color: rgba(177, 177, 177, 0.308);
+  background-color: rgb(68, 67, 167);
+  border-radius: 0 0 1vw 1vw;
 }
 #navbarTitle{
   margin-left: 1%;
@@ -21,7 +22,6 @@ body{
 }
 
 footer {
-  
   display: inline;
   left: 0;
   bottom: 0;
@@ -32,6 +32,7 @@ footer {
 }
 .hero{
   margin-bottom: 1%;
+  border-radius: 1vw;
 }
 
 .postComment{
