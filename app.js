@@ -3,9 +3,9 @@ const session = require('express-session')
 const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
 const parseForm = bodyParser.urlencoded({ extended: false })
+const sqlite3 = require('sqlite3')
 const bcrypt = require('bcrypt')
 const saltRounds = 10
-
 
 const app = express()
 app.use(session({
@@ -19,7 +19,6 @@ app.use(function (request, response, next) {
   next()
 })
 
-const sqlite3 = require('sqlite3')
 const { response } = require('express')
 const db = new sqlite3.Database('database.db', function (error) {
   if (error) {
