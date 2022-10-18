@@ -1,15 +1,24 @@
-const dummyData = require('./dummy-data')
 const express = require('express')
 const session = require('express-session')
 const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
-const parseForm = bodyParser.urlencoded ({extended: false})
+const parseForm = bodyParser.urlencoded({ extended: false })
+
 
 const app = express()
-// app.use(session())
+app.use(session({
+  saveUninitialized: false,
+  secret: 'aimaevyuibpap',
+  resave: false
+}))
 app.use(express.static('public'))
+app.use(function (request, response, next) {
+  response.locals.isLoggedIn = request.session.isLoggedIn
+  next()
+})
 
 const sqlite3 = require('sqlite3')
+const { response } = require('express')
 const db = new sqlite3.Database('database.db', function (error) {
   if (error) {
     console.error(error.message)
@@ -79,7 +88,6 @@ app.get('/', function (request, response) {
     }
   })
 })
-
 app.post('/', parseForm, function (request, response) {
   const comment = request.body.commentInput
   const postID = request.body.postId
@@ -104,93 +112,150 @@ app.get('/contact', function (request, response) {
 app.get('/login', function (request, response) {
   response.render('login.hbs')
 })
-app.post('/authenticate-login', function(request, response){
+
+const adminEmail = 'admin@admin.com'
+const adminPassword = 'Admin123'
+app.post('/authenticate-login', parseForm, function (request, response) {
+  console.log('Email and password maybe: ', request.body)
   const email = request.body.emailInput
   const password = request.body.passwordInput
+
+  if (email == adminEmail && password == adminPassword) {
+    request.session.isLoggedIn = true
+    console.log(request.session.isLoggedIn)
+    response.redirect('/admin')
+  } else {
+    const model = {
+      error: 'Email or Password is incorrect, please try again'
+    }
+    response.render('login.hbs', model)
+  }
 })
+
 app.get('/admin', function (request, response) {
-  const selectAllPostsQuery = 'SELECT * FROM Posts'
+  if (request.session.isLoggedIn) {
+    const selectAllPostsQuery = 'SELECT * FROM Posts'
 
-  db.all(selectAllPostsQuery, function (error, posts) {
-    if (error) {
-      console.log(error)
-    } else {
-      const getCommentsByPostId = new Promise((resolve, reject) => {
-        const allPosts = []
-        posts.forEach((post) => {
-          const selectCommentForPost =
-            'SELECT * FROM Comments WHERE PostID = ?'
+    db.all(selectAllPostsQuery, function (error, posts) {
+      if (error) {
+        console.log(error)
+      } else {
+        const getCommentsByPostId = new Promise((resolve, reject) => {
+          const allPosts = []
+          posts.forEach((post) => {
+            const selectCommentForPost =
+              'SELECT * FROM Comments WHERE PostID = ?'
 
-          db.all(selectCommentForPost, post.Id, function (error, comments) {
-            if (error) {
-              console.log(error)
-            } else {
-              const text = post.Text
-              const postId = post.Id
-              allPosts.push({ text, comments, postId })
-            }
+            db.all(selectCommentForPost, post.Id, function (error, comments) {
+              if (error) {
+                console.log(error)
+              } else {
+                const text = post.Text
+                const postId = post.Id
+                allPosts.push({ text, comments, postId })
+              }
+            })
           })
+          resolve(allPosts)
         })
-        resolve(allPosts)
-      })
-      getCommentsByPostId.then((allPosts) => {
-        const model = {
-          posts: allPosts,
-        }
-        response.render('admin.hbs', model)
-      })
+        getCommentsByPostId.then((allPosts) => {
+          const model = {
+            posts: allPosts,
+          }
+          response.render('admin.hbs', model)
+        })
+      }
+    })
+  } else {
+    const model = {
+      error: 'You dont have permission to access this page!'
     }
-  })
+    response.render('error.hbs', model)
+  }
 })
-app.post('/remove-post', parseForm, function(request,response){
-  const postId = request.body.postId
-  const removePostQuery = 'DELETE FROM Posts WHERE Id = ?'
-  db.all(removePostQuery, postId, function(error, cb){
-    if(error){
-      console.log(error)
-      response.redirect('/admin')
-    }else{
-      response.redirect('/admin')
+app.post('/remove-post', parseForm, function (request, response) {
+  if (request.session.isLoggedIn) {
+    const postId = request.body.postId
+    const removePostQuery = 'DELETE FROM Posts WHERE Id = ?'
+    db.all(removePostQuery, postId, function (error, cb) {
+      if (error) {
+        console.log(error)
+        response.redirect('/admin')
+      } else {
+        response.redirect('/admin')
+      }
+    })
+  } else {
+    const model = {
+      error: 'You dont have permission to access to this'
     }
-  })
+    response.render('error.hbs', model)
+  }
 })
-app.post('/update-post', parseForm, function(request, response){
-  const postId = request.body.postId
-  const postText = request.body.postText  
-  const updatedPostValues = [postText, postId]
-  const updatePostQuery = 'Update Posts SET Text = ? WHERE Id = ?'
-  db.all(updatePostQuery, updatedPostValues, function(error, cb){
-    if(error){
-      console.log(error)
-      response.redirect('/admin')
-    }else{
-      response.redirect('/admin')
+app.post('/update-post', parseForm, function (request, response) {
+  if (request.session.isLoggedIn) {
+    const postId = request.body.postId
+    const postText = request.body.postText
+    const updatedPostValues = [postText, postId]
+    const updatePostQuery = 'Update Posts SET Text = ? WHERE Id = ?'
+    db.all(updatePostQuery, updatedPostValues, function (error, cb) {
+      if (error) {
+        console.log(error)
+        response.redirect('/admin')
+      } else {
+        response.redirect('/admin')
+      }
+    })
+  } else {
+    const model = {
+      error: 'You dont have permission to access this'
     }
-  })
+    response.render('error.hbs', model)
+  }
 })
-
-app.post('/add-post', parseForm, function(request, response){
-  const postInput = request.body.postInput
-  const addPostQuery = 'INSERT INTO Posts (Text) VALUES (?)'
-  db.all(addPostQuery, postInput, function(error, cb){
-    if(error){
-      console.log(error)
-      response.redirect('/admin')
-    }else{
-      response.redirect('/admin')
+app.post('/add-post', parseForm, function (request, response) {
+  if (request.session.isLoggedIn) {
+    const postInput = request.body.postInput
+    const addPostQuery = 'INSERT INTO Posts (Text) VALUES (?)'
+    db.all(addPostQuery, postInput, function (error, cb) {
+      if (error) {
+        console.log(error)
+        response.redirect('/admin')
+      } else {
+        response.redirect('/admin')
+      }
+    })
+  } else {
+    const model = {
+      error: 'You dont have permission to access this'
     }
-  })
-}) 
-app.post('/remove-comment', parseForm, function(request,response){
-  const commentId = request.body.commentId
-  const removeCommentQuery = 'DELETE FROM Comments WHERE Id = ?'
-  db.all(removeCommentQuery, commentId, function(error, cb){
-    if(error){
-      console.log(error)
-      response.redirect('/admin')
-    }else{
-      response.redirect('/admin')
+    response.render('error.hbs', model)
+  }
+})
+app.post('/remove-comment', parseForm, function (request, response) {
+  if (request.session.isLoggedIn) {
+    const commentId = request.body.commentId
+    const removeCommentQuery = 'DELETE FROM Comments WHERE Id = ?'
+    db.all(removeCommentQuery, commentId, function (error, cb) {
+      if (error) {
+        console.log(error)
+        response.redirect('/admin')
+      } else {
+        response.redirect('/admin')
+      }
+    })
+  } else {
+    const model = {
+      error: 'You dont have permission to access this'
     }
-  })
+    response.render('error.hbs', model)
+  }
+})
+app.post('/logout', function(request, response){
+  request.session.isLoggedIn = false
+  response.redirect('/')
+})
+app.get('/error', function () {
+  response.render('error.hbs')
 })
 app.listen(8080)
