@@ -3,6 +3,8 @@ const session = require('express-session')
 const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
 const parseForm = bodyParser.urlencoded({ extended: false })
+const bcrypt = require('bcrypt')
+const saltRounds = 10
 
 
 const app = express()
@@ -114,19 +116,28 @@ app.get('/login', function (request, response) {
 })
 
 const adminEmail = 'admin@admin.com'
-const adminPassword = 'Admin123'
+//Password = Admin123
+const adminPassword = '$2b$10$wHdoX38LnOEj4eQePoPj7eNTui3VzUPyximWVcwE672Pb7YUPyWPK'
 app.post('/authenticate-login', parseForm, function (request, response) {
   console.log('Email and password maybe: ', request.body)
   const email = request.body.emailInput
   const password = request.body.passwordInput
-
-  if (email == adminEmail && password == adminPassword) {
-    request.session.isLoggedIn = true
-    console.log(request.session.isLoggedIn)
-    response.redirect('/admin')
-  } else {
+  if(email == adminEmail){
+  bcrypt.compare(password, adminPassword, function(error, result){
+    if(result){
+      request.session.isLoggedIn = true
+      console.log(request.session.isLoggedIn)
+      response.redirect('/admin')
+    }else{
+      const model = {
+        error: 'Password is incorrect, please try again'
+      }
+      response.render('login.hbs', model)
+    }
+  })
+  }else{
     const model = {
-      error: 'Email or Password is incorrect, please try again'
+      error: 'Email is incorrect, please try again'
     }
     response.render('login.hbs', model)
   }
