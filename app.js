@@ -22,18 +22,20 @@ app.use(function (request, response, next) {
 const { response } = require('express')
 const db = new sqlite3.Database('database.db', function (error) {
   if (error) {
-    console.error(error.message)
-  } else {
-    console.log('Connected to the database.')
+    const model = {
+      error: 'Database error'
+    }
+    response.render('error.hbs', model)
   }
 })
 db.run(
   "CREATE TABLE IF NOT EXISTS  'Comments' ( 'Id'	INTEGER, 'PostId'	INTEGER, 'Comment'	TEXT NOT NULL, FOREIGN KEY('PostId') REFERENCES 'Posts'('Id'), PRIMARY KEY('Id' AUTOINCREMENT) ) ",
   function (error) {
     if (error) {
-      console.log(error)
-    } else {
-      console.log('Comments table succesfully created if not existed')
+      const model = {
+        error: 'Database error'
+      }
+      response.render('error.hbs', model)
     }
   },
 )
@@ -41,9 +43,10 @@ db.run(
   "CREATE TABLE IF NOT EXISTS  'Posts' ( 'Id'	INTEGER,  'Text'	TEXT NOT NULL, PRIMARY KEY('Id' AUTOINCREMENT) ) ",
   function (error) {
     if (error) {
-      console.log(error)
-    } else {
-      console.log('Posts table succesfully created if not existed')
+      const model = {
+        error: 'Database error'
+      }
+      response.render('error.hbs', model)
     }
   },
 )
@@ -60,7 +63,10 @@ app.get('/', function (request, response) {
 
   db.all(selectAllPostsQuery, function (error, posts) {
     if (error) {
-      console.log(error)
+      const model = {
+        error: 'Database error'
+      }
+      response.render('error.hbs', model)
     } else {
       const getCommentsByPostId = new Promise((resolve, reject) => {
         const allPosts = []
@@ -70,7 +76,10 @@ app.get('/', function (request, response) {
 
           db.all(selectCommentForPost, post.Id, function (error, comments) {
             if (error) {
-              console.log(error)
+              const model = {
+                error: 'Database error'
+              }
+              response.render('error.hbs', model)
             } else {
               const text = post.Text
               const postId = post.Id
@@ -84,14 +93,13 @@ app.get('/', function (request, response) {
         const model = {
           posts: allPosts,
         }
-        console.log('Posts: ', allPosts)
         response.render('home.hbs', model)
       })
     }
   })
 })
 app.post('/', parseForm, function (request, response) {
-  
+
   const comment = request.body.commentInput
   const postID = request.body.postId
   const commentValues = [comment, postID]
@@ -99,7 +107,10 @@ app.post('/', parseForm, function (request, response) {
     'INSERT INTO Comments (Comment, PostId) VALUES (?, ?)'
   db.all(insertCommentQuery, commentValues, function (error, cb) {
     if (error) {
-      console.log(error)
+      const model = {
+        error: 'Database error'
+      }
+      response.render('error.hbs', model)
     } else {
       response.redirect('/')
     }
@@ -120,23 +131,21 @@ const adminEmail = 'admin@admin.com'
 //Password = Admin123
 const adminPassword = '$2b$10$wHdoX38LnOEj4eQePoPj7eNTui3VzUPyximWVcwE672Pb7YUPyWPK'
 app.post('/authenticate-login', parseForm, function (request, response) {
-  console.log('Email and password maybe: ', request.body)
   const email = request.body.emailInput
   const password = request.body.passwordInput
-  if(email == adminEmail){
-  bcrypt.compare(password, adminPassword, function(error, result){
-    if(result){
-      request.session.isLoggedIn = true
-      console.log(request.session.isLoggedIn)
-      response.redirect('/admin')
-    }else{
-      const model = {
-        error: 'Password is incorrect, please try again'
+  if (email == adminEmail) {
+    bcrypt.compare(password, adminPassword, function (error, result) {
+      if (result) {
+        request.session.isLoggedIn = true
+        response.redirect('/admin')
+      } else {
+        const model = {
+          error: 'Password is incorrect, please try again'
+        }
+        response.render('login.hbs', model)
       }
-      response.render('login.hbs', model)
-    }
-  })
-  }else{
+    })
+  } else {
     const model = {
       error: 'Email is incorrect, please try again'
     }
@@ -150,7 +159,10 @@ app.get('/admin', function (request, response) {
 
     db.all(selectAllPostsQuery, function (error, posts) {
       if (error) {
-        console.log(error)
+        const model = {
+          error: 'Database error'
+        }
+        response.render('error.hbs', model)
       } else {
         const getCommentsByPostId = new Promise((resolve, reject) => {
           const allPosts = []
@@ -160,7 +172,10 @@ app.get('/admin', function (request, response) {
 
             db.all(selectCommentForPost, post.Id, function (error, comments) {
               if (error) {
-                console.log(error)
+                const model = {
+                  error: 'Database error'
+                }
+                response.render('error.hbs', model)
               } else {
                 const text = post.Text
                 const postId = post.Id
@@ -191,8 +206,10 @@ app.post('/remove-post', parseForm, function (request, response) {
     const removePostQuery = 'DELETE FROM Posts WHERE Id = ?'
     db.all(removePostQuery, postId, function (error, cb) {
       if (error) {
-        console.log(error)
-        response.redirect('/admin')
+        const model = {
+          error: 'Database error'
+        }
+        response.render('error.hbs', model)
       } else {
         response.redirect('/admin')
       }
@@ -212,8 +229,10 @@ app.post('/update-post', parseForm, function (request, response) {
     const updatePostQuery = 'Update Posts SET Text = ? WHERE Id = ?'
     db.all(updatePostQuery, updatedPostValues, function (error, cb) {
       if (error) {
-        console.log(error)
-        response.redirect('/admin')
+        const model = {
+          error: 'Database error'
+        }
+        response.render('error.hbs', model)
       } else {
         response.redirect('/admin')
       }
@@ -231,8 +250,10 @@ app.post('/add-post', parseForm, function (request, response) {
     const addPostQuery = 'INSERT INTO Posts (Text) VALUES (?)'
     db.all(addPostQuery, postInput, function (error, cb) {
       if (error) {
-        console.log(error)
-        response.redirect('/admin')
+        const model = {
+          error: 'Database error'
+        }
+        response.render('error.hbs', model)
       } else {
         response.redirect('/admin')
       }
@@ -250,8 +271,10 @@ app.post('/remove-comment', parseForm, function (request, response) {
     const removeCommentQuery = 'DELETE FROM Comments WHERE Id = ?'
     db.all(removeCommentQuery, commentId, function (error, cb) {
       if (error) {
-        console.log(error)
-        response.redirect('/admin')
+        const model = {
+          error: 'Database error'
+        }
+        response.render('error.hbs', model)
       } else {
         response.redirect('/admin')
       }
@@ -263,7 +286,7 @@ app.post('/remove-comment', parseForm, function (request, response) {
     response.render('error.hbs', model)
   }
 })
-app.post('/logout', function(request, response){
+app.post('/logout', function (request, response) {
   request.session.isLoggedIn = false
   response.redirect('/')
 })
