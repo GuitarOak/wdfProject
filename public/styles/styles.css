@@ -8,6 +8,7 @@ body{
   display: flex;
   background-color: rgb(68, 67, 167);
   border-radius: 0 0 1vw 1vw;
+  
 }
 #navbarTitle{
   margin-left: 1%;
@@ -17,9 +18,9 @@ body{
   font-size: 15pt;
   color: rgb(47, 46, 114);
   margin-left: 10%;
-  margin-top: 1%;
+  text-align: right;
   text-decoration: none;
-}
+  }
 
 footer {
   display: inline;
