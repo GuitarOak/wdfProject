@@ -84,12 +84,14 @@ app.get('/', function (request, response) {
         const model = {
           posts: allPosts,
         }
+        console.log('Posts: ', allPosts)
         response.render('home.hbs', model)
       })
     }
   })
 })
 app.post('/', parseForm, function (request, response) {
+  
   const comment = request.body.commentInput
   const postID = request.body.postId
   const commentValues = [comment, postID]
