@@ -22,6 +22,7 @@ app.use(function (request, response, next) {
 const { response } = require('express')
 const db = new sqlite3.Database('database.db', function (error) {
   if (error) {
+    console.log(error)
     const model = {
       error: 'Database error'
     }
@@ -36,6 +37,7 @@ db.run(
   "CREATE TABLE IF NOT EXISTS  'Comments' ( 'Id'	INTEGER, 'PostId'	INTEGER, 'Comment'	TEXT NOT NULL, FOREIGN KEY('PostId') REFERENCES 'Posts'('Id'), PRIMARY KEY('Id' AUTOINCREMENT) ) ",
   function (error) {
     if (error) {
+      console.log(error)
       const model = {
         error: 'Database error'
       }
@@ -47,6 +49,7 @@ db.run(
   "CREATE TABLE IF NOT EXISTS  'Posts' ( 'Id'	INTEGER,  'Text'	TEXT NOT NULL, PRIMARY KEY('Id' AUTOINCREMENT) ) ",
   function (error) {
     if (error) {
+      console.log(error)
       const model = {
         error: 'Database error'
       }
@@ -67,6 +70,7 @@ app.get('/', function (request, response) {
 
   db.all(selectAllPostsQuery, function (error, posts) {
     if (error) {
+      console.log(error)
       const model = {
         error: 'Database error'
       }
@@ -80,6 +84,7 @@ app.get('/', function (request, response) {
 
           db.all(selectCommentForPost, post.Id, function (error, comments) {
             if (error) {
+              console.log(error)
               const model = {
                 error: 'Database error'
               }
@@ -111,6 +116,7 @@ app.post('/', parseForm, function (request, response) {
     'INSERT INTO Comments (Comment, PostId) VALUES (?, ?)'
   db.all(insertCommentQuery, commentValues, function (error, cb) {
     if (error) {
+      console.log(error)
       const model = {
         error: 'Database error'
       }
@@ -140,6 +146,7 @@ app.post('/authenticate-login', parseForm, function (request, response) {
   if (email == adminEmail) {
     bcrypt.compare(password, adminPassword, function (error, result) {
       if (result) {
+        console.log(error)
         request.session.isLoggedIn = true
         response.redirect('/admin')
       } else {
@@ -160,9 +167,9 @@ app.post('/authenticate-login', parseForm, function (request, response) {
 app.get('/admin', function (request, response) {
   if (request.session.isLoggedIn) {
     const selectAllPostsQuery = 'SELECT * FROM Posts'
-
     db.all(selectAllPostsQuery, function (error, posts) {
       if (error) {
+        console.log(error)
         const model = {
           error: 'Database error'
         }
@@ -176,6 +183,7 @@ app.get('/admin', function (request, response) {
 
             db.all(selectCommentForPost, post.Id, function (error, comments) {
               if (error) {
+                console.log(error)
                 const model = {
                   error: 'Database error'
                 }
@@ -210,6 +218,7 @@ app.post('/remove-post', parseForm, function (request, response) {
     const removePostQuery = 'DELETE FROM Posts WHERE Id = ?'
     db.all(removePostQuery, postId, function (error, cb) {
       if (error) {
+        console.log(error)
         const model = {
           error: 'Database error'
         }
@@ -233,6 +242,7 @@ app.post('/update-post', parseForm, function (request, response) {
     const updatePostQuery = 'Update Posts SET Text = ? WHERE Id = ?'
     db.all(updatePostQuery, updatedPostValues, function (error, cb) {
       if (error) {
+        console.log(error)
         const model = {
           error: 'Database error'
         }
@@ -254,6 +264,7 @@ app.post('/add-post', parseForm, function (request, response) {
     const addPostQuery = 'INSERT INTO Posts (Text) VALUES (?)'
     db.all(addPostQuery, postInput, function (error, cb) {
       if (error) {
+        console.log(error)
         const model = {
           error: 'Database error'
         }
@@ -275,6 +286,7 @@ app.post('/remove-comment', parseForm, function (request, response) {
     const removeCommentQuery = 'DELETE FROM Comments WHERE Id = ?'
     db.all(removeCommentQuery, commentId, function (error, cb) {
       if (error) {
+        console.log(error)
         const model = {
           error: 'Database error'
         }
