@@ -41,8 +41,10 @@ db.run(
       const model = {
         error: 'Database error'
       }
+      
       response.render('error.hbs', model)
     }
+    console.log('Comments table created')
   },
 )
 db.run(
@@ -55,6 +57,7 @@ db.run(
       }
       response.render('error.hbs', model)
     }
+    console.log('Posts table created')
   },
 )
 
