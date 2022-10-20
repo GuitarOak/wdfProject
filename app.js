@@ -93,6 +93,7 @@ app.get('/', function (request, response) {
               const text = post.Text
               const postId = post.Id
               allPosts.push({ text, comments, postId })
+              
             }
           })
         })
@@ -102,6 +103,7 @@ app.get('/', function (request, response) {
         const model = {
           posts: allPosts,
         }
+        console.log('All posts: ', allPosts)
         response.render('home.hbs', model)
       })
     }
