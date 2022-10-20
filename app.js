@@ -25,8 +25,12 @@ const db = new sqlite3.Database('database.db', function (error) {
     const model = {
       error: 'Database error'
     }
+    
     response.render('error.hbs', model)
+  }else{
+    console.log('Connected to Database')
   }
+
 })
 db.run(
   "CREATE TABLE IF NOT EXISTS  'Comments' ( 'Id'	INTEGER, 'PostId'	INTEGER, 'Comment'	TEXT NOT NULL, FOREIGN KEY('PostId') REFERENCES 'Posts'('Id'), PRIMARY KEY('Id' AUTOINCREMENT) ) ",
