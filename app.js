@@ -151,9 +151,11 @@ app.post('/authenticate-login', parseForm, function (request, response) {
   const email = request.body.emailInput
   const password = request.body.passwordInput
   const validatedPassword = bcrypt.compareSync(password, adminPassword)
+  console.log('Validated Password: ', validatedPassword)
   if (email == adminEmail && validatedPassword) {
     request.session.isLoggedIn = true
     response.redirect('/admin')
+    console.log('Logged in')
   } else {
     const model = {
       error: 'Email or Password is incorrect, please try again'
