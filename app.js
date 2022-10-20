@@ -149,22 +149,13 @@ const adminPassword = '$2b$10$wHdoX38LnOEj4eQePoPj7eNTui3VzUPyximWVcwE672Pb7YUPy
 app.post('/authenticate-login', parseForm, function (request, response) {
   const email = request.body.emailInput
   const password = request.body.passwordInput
-  if (email == adminEmail) {
-    bcrypt.compare(password, adminPassword, function (error, result) {
-      if (result) {
-        console.log(error)
-        request.session.isLoggedIn = true
-        response.redirect('/admin')
-      } else {
-        const model = {
-          error: 'Password is incorrect, please try again'
-        }
-        response.render('login.hbs', model)
-      }
-    })
+  const validatedPassword = bcrypt.compareSync(password, adminPassword)
+  if (email == adminEmail && validatedPassword) {
+    request.session.isLoggedIn = true
+    response.redirect('/admin')
   } else {
     const model = {
-      error: 'Email is incorrect, please try again'
+      error: 'Email or Password is incorrect, please try again'
     }
     response.render('login.hbs', model)
   }
