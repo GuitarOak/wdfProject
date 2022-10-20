@@ -20,7 +20,7 @@ app.use(function (request, response, next) {
 })
 
 const { response } = require('express')
-const db = new sqlite3.Database('/database.db', function (error) {
+const db = new sqlite3.Database('database.db', function (error) {
   if (error) {
     const model = {
       error: 'Database error'
