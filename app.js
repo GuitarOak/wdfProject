@@ -70,7 +70,6 @@ app.engine(
 
 app.get('/', function (request, response) {
   const selectAllPostsQuery = 'SELECT * FROM Posts'
-
   db.all(selectAllPostsQuery, function (error, posts) {
     if (error) {
       console.log(error)
@@ -79,6 +78,7 @@ app.get('/', function (request, response) {
       }
       response.render('error.hbs', model)
     } else {
+      console.log('Posts: ', posts)
       const getCommentsByPostId = new Promise((resolve, reject) => {
         const allPosts = []
         posts.forEach((post) => {
@@ -93,6 +93,7 @@ app.get('/', function (request, response) {
               }
               response.render('error.hbs', model)
             } else {
+              console.log('Comments', comments)
               const text = post.Text
               const postId = post.Id
               allPosts.push({ text, comments, postId })
@@ -275,6 +276,7 @@ app.post('/add-post', parseForm, function (request, response) {
         }
         response.render('error.hbs', model)
       } else {
+        console.log('Posted: ', postInput)
         response.redirect('/admin')
       }
     })
