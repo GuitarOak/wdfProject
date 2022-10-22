@@ -3,7 +3,7 @@
     <div class='column col-8'>
       {{#if posts.length}}
       {{#each posts}}
-      <div class='hero bg-primary'>
+      <div class='hero hero-sm bg-primary'>
         <div class='hero-body'>
           <div class='post'>
             <div class='postText'>
@@ -18,13 +18,11 @@
                   Comment:
                 </label>
                 <input id='commentInput' name='commentInput' type='text' placeholder='Good post, Oak!' required />
-              </div>
-              <div>
                 <button type="submit">Submit</button>
               </div>
             </form>
+            {{#if comments.length}}
             <div class='postCommentContainer'>
-              {{#if comments.length}}
               {{#each comments}}
               <div class='postComment'>
                 <p id='comment'>
@@ -32,8 +30,8 @@
                 </p>
               </div>
               {{/each}}
-              {{/if}}
             </div>
+            {{/if}}
           </div>
         </div>
       </div>

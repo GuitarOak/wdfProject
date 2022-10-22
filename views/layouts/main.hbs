@@ -4,7 +4,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello</title>
+    <title>Oak Talks About Music</title>
     <link rel="stylesheet" type="text/css"href="/styles/styles.css">
     <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
     <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-exp.min.css">
@@ -12,15 +12,21 @@
 
   </head>
   <body>
-
-    <header id="navbar">
-      <h1 id="navbarTitle">Oak Talks About Music </h1>
-      <a class="navbarLink" href="/" class="navbar-brand mr-2">Home</a>
-      <a class="navbarLink" href="/about" class="btn btn-link">About</a>
-      <a class="navbarLink" href="/contact" class="btn btn-link">Contact</a>
+    <header id="navbar" class="navbar">
+      <section class="navbar-section">
+        <h1 id="navbarTitle">Oak Talks About Music </h1>
+      </section>
+      
+      <section class="navbar-section">
+        <a class="navbarLink" href="/" class="navbar-brand mr-2">Home</a>
+        <a class="navbarLink" href="/about" class="btn btn-link">About</a>
+        <a class="navbarLink" href="/contact" class="btn btn-link">Contact</a>
+      </section>
     </header>
 
-    {{{body}}}
+    <div class='main-content'>
+      {{{body}}}
+    </div>
 
     <footer>
       <p>This website was made by Emil "The Oak" Karlsson for the course</p>
