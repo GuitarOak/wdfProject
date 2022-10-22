@@ -19,45 +19,41 @@ app.use(function (request, response, next) {
   next()
 })
 
+const MIN_COMMENT_LENGTH = 5
+const MIN_POST_LENGTH = 10
+
 const { response } = require('express')
 const db = new sqlite3.Database('database.db', function (error) {
   if (error) {
-    console.log("Error",error)
     const model = {
       error: 'Database error'
     }
-    
     response.render('error.hbs', model)
-  }else{
+  } else {
     console.log('Connected to Database')
   }
-
 })
 db.run(
   "CREATE TABLE IF NOT EXISTS  'Comments' ( 'Id'	INTEGER, 'PostId'	INTEGER, 'Comment'	TEXT NOT NULL, FOREIGN KEY('PostId') REFERENCES 'Posts'('Id'), PRIMARY KEY('Id' AUTOINCREMENT) ) ",
   function (error) {
     if (error) {
-      console.log("Error",error)
       const model = {
         error: 'Database error'
       }
-      
       response.render('error.hbs', model)
     }
-    console.log('Comments table created')
   },
 )
 db.run(
   "CREATE TABLE IF NOT EXISTS  'Posts' ( 'Id'	INTEGER,  'Text'	TEXT NOT NULL, PRIMARY KEY('Id' AUTOINCREMENT) ) ",
   function (error) {
     if (error) {
-      console.log("Error",error)
+      console.log("Error", error)
       const model = {
         error: 'Database error'
       }
       response.render('error.hbs', model)
     }
-    console.log('Posts table created')
   },
 )
 
@@ -72,13 +68,11 @@ app.get('/', function (request, response) {
   const selectAllPostsQuery = 'SELECT * FROM Posts'
   db.all(selectAllPostsQuery, function (error, posts) {
     if (error) {
-      console.log("Error",error)
       const model = {
         error: 'Database error'
       }
       response.render('error.hbs', model)
     } else {
-      console.log('Posts: ', posts)
       const getCommentsByPostId = new Promise((resolve, reject) => {
         const allPosts = []
         posts.forEach((post) => {
@@ -87,17 +81,14 @@ app.get('/', function (request, response) {
 
           db.all(selectCommentForPost, post.Id, function (error, comments) {
             if (error) {
-              console.log("Error",error)
               const model = {
                 error: 'Database error'
               }
               response.render('error.hbs', model)
             } else {
-              console.log('Comments', comments)
               const text = post.Text
               const postId = post.Id
               allPosts.push({ text, comments, postId })
-              
             }
           })
         })
@@ -107,7 +98,6 @@ app.get('/', function (request, response) {
         const model = {
           posts: allPosts,
         }
-        console.log('All posts: ', allPosts)
         response.render('home.hbs', model)
       })
     }
@@ -116,21 +106,27 @@ app.get('/', function (request, response) {
 app.post('/', parseForm, function (request, response) {
 
   const comment = request.body.commentInput
-  const postID = request.body.postId
-  const commentValues = [comment, postID]
-  const insertCommentQuery =
-    'INSERT INTO Comments (Comment, PostId) VALUES (?, ?)'
-  db.all(insertCommentQuery, commentValues, function (error, cb) {
-    if (error) {
-      console.log("Error",error)
-      const model = {
-        error: 'Database error'
-      }
-      response.render('error.hbs', model)
-    } else {
-      response.redirect('/')
+  if (comment.length < MIN_COMMENT_LENGTH) {
+    const model = {
+      error: 'Comment needs to be longer than 5 characters'
     }
-  })
+    response.render('error.hbs', model)
+  } else {
+    const postID = request.body.postId
+    const commentValues = [comment, postID]
+    const insertCommentQuery =
+      'INSERT INTO Comments (Comment, PostId) VALUES (?, ?)'
+    db.all(insertCommentQuery, commentValues, function (error, cb) {
+      if (error) {
+        const model = {
+          error: 'Database error'
+        }
+        response.render('error.hbs', model)
+      } else {
+        response.redirect('/')
+      }
+    })
+  }
 })
 
 app.get('/about', function (request, response) {
@@ -151,11 +147,10 @@ app.post('/authenticate-login', parseForm, function (request, response) {
   const email = request.body.emailInput
   const password = request.body.passwordInput
   const validatedPassword = bcrypt.compareSync(password, adminPassword)
-  console.log('Validated Password: ', validatedPassword)
+
   if (email == adminEmail && validatedPassword) {
     request.session.isLoggedIn = true
     response.redirect('/admin')
-    console.log('Logged in')
   } else {
     const model = {
       error: 'Email or Password is incorrect, please try again'
@@ -169,7 +164,6 @@ app.get('/admin', function (request, response) {
     const selectAllPostsQuery = 'SELECT * FROM Posts'
     db.all(selectAllPostsQuery, function (error, posts) {
       if (error) {
-        console.log("Error",error)
         const model = {
           error: 'Database error'
         }
@@ -180,10 +174,8 @@ app.get('/admin', function (request, response) {
           posts.forEach((post) => {
             const selectCommentForPost =
               'SELECT * FROM Comments WHERE PostID = ?'
-
             db.all(selectCommentForPost, post.Id, function (error, comments) {
               if (error) {
-                console.log("Error",error)
                 const model = {
                   error: 'Database error'
                 }
@@ -218,7 +210,6 @@ app.post('/remove-post', parseForm, function (request, response) {
     const removePostQuery = 'DELETE FROM Posts WHERE Id = ?'
     db.all(removePostQuery, postId, function (error, cb) {
       if (error) {
-        console.log("Error",error)
         const model = {
           error: 'Database error'
         }
@@ -238,19 +229,25 @@ app.post('/update-post', parseForm, function (request, response) {
   if (request.session.isLoggedIn) {
     const postId = request.body.postId
     const postText = request.body.postText
-    const updatedPostValues = [postText, postId]
-    const updatePostQuery = 'Update Posts SET Text = ? WHERE Id = ?'
-    db.all(updatePostQuery, updatedPostValues, function (error, cb) {
-      if (error) {
-        console.log("Error",error)
-        const model = {
-          error: 'Database error'
-        }
-        response.render('error.hbs', model)
-      } else {
-        response.redirect('/admin')
+    if (postText.length < MIN_POST_LENGTH) {
+      const model = {
+        error: 'Post needs to be longer than 10 characters'
       }
-    })
+      response.render('error.hbs', model)
+    } else {
+      const updatedPostValues = [postText, postId]
+      const updatePostQuery = 'Update Posts SET Text = ? WHERE Id = ?'
+      db.all(updatePostQuery, updatedPostValues, function (error, cb) {
+        if (error) {
+          const model = {
+            error: 'Database error'
+          }
+          response.render('error.hbs', model)
+        } else {
+          response.redirect('/admin')
+        }
+      })
+    }
   } else {
     const model = {
       error: 'You dont have permission to access this'
@@ -261,19 +258,24 @@ app.post('/update-post', parseForm, function (request, response) {
 app.post('/add-post', parseForm, function (request, response) {
   if (request.session.isLoggedIn) {
     const postInput = request.body.postInput
-    const addPostQuery = 'INSERT INTO Posts (Text) VALUES (?)'
-    db.all(addPostQuery, postInput, function (error, cb) {
-      if (error) {
-        console.log("Error",error)
-        const model = {
-          error: 'Database error'
-        }
-        response.render('error.hbs', model)
-      } else {
-        console.log('Posted: ', postInput)
-        response.redirect('/admin')
+    if (postInput.length < MIN_POST_LENGTH) {
+      const model = {
+        error: 'Post needs to be longer than 10 characters'
       }
-    })
+      response.render('error.hbs', model)
+    } else {
+      const addPostQuery = 'INSERT INTO Posts (Text) VALUES (?)'
+      db.all(addPostQuery, postInput, function (error, cb) {
+        if (error) {
+          const model = {
+            error: 'Database error'
+          }
+          response.render('error.hbs', model)
+        } else {
+          response.redirect('/admin')
+        }
+      })
+    }
   } else {
     const model = {
       error: 'You dont have permission to access this'
@@ -287,7 +289,6 @@ app.post('/remove-comment', parseForm, function (request, response) {
     const removeCommentQuery = 'DELETE FROM Comments WHERE Id = ?'
     db.all(removeCommentQuery, commentId, function (error, cb) {
       if (error) {
-        console.log("Error",error)
         const model = {
           error: 'Database error'
         }
