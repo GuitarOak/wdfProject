@@ -3,19 +3,16 @@
     <div class='column col-3'>
       <p>{{error}}</p>
       <form method='POST' action='/authenticate-login'>
-
         <label class='form-label' for='form-input'>
           Email
         </label>
         <input name='emailInput' class='form-input loginInputs' type='email' placeholder='Email'
           pattern='[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,14}$' />
-
         <label class='form-label' for='form-input'>
           Password
         </label>
         <input name='passwordInput' class='form-input' type='password' placeholder='Password'
           pattern='^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$' />
-
         <button type='submit' class='btn btn-primary'>Login</button>
       </form>
     </div>
