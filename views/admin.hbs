@@ -10,12 +10,31 @@
           <label class='form-label' for='input-example-3'>
             New Post
           </label>
-          <textarea name='postInput' minlength="5" class='form-input' id='input-example-3' placeholder='Textarea' rows='3'
-            required></textarea>
+          <textarea name='postInput' minlength="10" class='form-input' id='input-example-3'
+            placeholder='Something interesting...' rows='3' required></textarea>
           <button type="submit" class='btn btn-primary'>
             Post
           </button>
         </div>
+      </form>
+
+      <form method='POST' action='/add-music'>
+        <h3>Create new Music</h3>
+        <div>
+          <label for="newMusicTitle">Title</label>
+          <textarea name="newMusicTitle" id="" cols="75" rows="1"></textarea>
+        </div>
+        <div>
+          <label for="newMusicLink">Song link</label>
+          <textarea name="newMusicLink" id="" cols="70" rows="1"></textarea>
+        </div>
+        <div>
+          <label for="newMusicImageLink">Image link</label>
+          <textarea name="newMusicImageLink" id="" cols="69" rows="1"></textarea>
+        </div>
+        <button type="submit" class='btn btn-primary'>
+          Post
+        </button>
       </form>
 
       <form method='POST' action='/logout'>
@@ -68,12 +87,43 @@
           </div>
         </div>
       </div>
+
     </div>
     {{/each}}
     {{else}}
     <p>
       No posts available.
     </p>
+    {{/if}}
+
+    <h3>
+      Update/Delete existing Music
+    </h3>
+    {{#if music.length}}
+    {{!-- <div class="myMusicContainer"> --}}
+      {{#each music}}
+      <div class="myMusicGridItem">
+        <div class="myMusicImage"><img src={{ImageLink}} alt="Album cover for " + {{Title}}></div>
+        <form method='POST' action='update-music'>
+          <input type='hidden' name='musicID' value="{{ID}}" />
+          <textarea minlength="3" name="musicTitle" cols="40" rows="2" required>{{Title}}</textarea>
+          <button class='btn'>
+            Update Title
+          </button>
+          <div><a class="myMusicLink" href={{Link}}>Listen here!</a></div>
+        </form>
+        <form method='POST' action='/remove-music'>
+          <input type='hidden' name='musicID' value="{{ID}}" />
+          <button type='submit' class='btn btn-error'>
+            Remove Music
+          </button>
+        </form>
+      </div>
+      {{/each}}
+      {{!--
+    </div> --}}
+    {{else}}
+    <p>Failed to retrieve music</p>
     {{/if}}
   </div>
 </div>

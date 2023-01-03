@@ -1,0 +1,13 @@
+{{#if myMusic.length}}
+<div class="myMusicContainer">
+    {{#each myMusic}}
+    <div class="myMusicGridItem">
+        <div class="myMusicImage"><img src={{ImageLink}} alt="Album cover for " + {{Title}}></div>
+        <div class="myMusicTitle">{{Title}}</div>
+        <div ><a class="myMusicLink" href={{Link}}>Listen here!</a></div>
+    </div>
+    {{/each}}
+</div>
+{{else}}
+<p>Failed to retrieve music</p>
+{{/if}}

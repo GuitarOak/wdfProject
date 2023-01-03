@@ -1,4 +1,4 @@
-.main-content{
+.main-content {
   margin-top: 4rem;
 }
 
@@ -11,7 +11,7 @@ a:hover {
   filter: brightness(0.9)
 }
 
-#navbar{
+#navbar {
   position: fixed;
   top: 0;
   width: 100%;
@@ -20,7 +20,8 @@ a:hover {
   border-radius: 0 0 1vw 1vw;
   z-index: 999;
 }
-#navbarTitle{
+
+#navbarTitle {
   margin-left: 1%;
   color: rgb(230, 230, 230);
 }
@@ -40,7 +41,8 @@ footer {
 
   text-align: center;
 }
-.hero{
+
+.hero {
   margin-bottom: 3%;
   border-radius: 1vw;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
@@ -56,7 +58,7 @@ footer {
   overflow-y: scroll;
 }
 
-.postComment{
+.postComment {
   min-width: 20%;
   max-width: min-content;
   background-color: rgb(216, 216, 216);
@@ -74,6 +76,35 @@ footer {
   text-overflow: ellipsis;
 }
 
-.loginInputs{
+.loginInputs {
   width: 40%;
+}
+
+.myMusicContainer {
+
+  place-items: center;
+
+  display: grid;
+  gap: 15vw, 5vh;
+  grid-template-columns: 30% 30%;
+}
+
+.myMusicGridItem {
+  align-items: center;
+  border-radius: 1vw;
+  background-color: #707070;
+}
+
+.myMusicImage {
+  border-radius: 1vw;
+}
+
+.myMusicTitle {
+  color: rgb(209, 206, 206) !important;
+  margin-left: 1vw;
+}
+
+.myMusicLink {
+  margin-left: 1vw;
+  color: rgb(230, 230, 230) !important;
 }
