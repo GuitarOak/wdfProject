@@ -31,6 +31,8 @@ const db = new sqlite3.Database('database.db', function (error) {
     console.log('Connected to Database')
   }
 })
+
+//Database initialising
 db.run(
   "CREATE TABLE IF NOT EXISTS  'Comments' ( 'Id'	INTEGER, 'PostId'	INTEGER, 'Comment'	TEXT NOT NULL, FOREIGN KEY('PostId') REFERENCES 'Posts'('Id'), PRIMARY KEY('Id' AUTOINCREMENT) ) ",
   function (error) {
@@ -55,7 +57,16 @@ db.run(
   "CREATE TABLE IF NOT EXISTS 'Posts' ( 'Id'	INTEGER,  'Text'	TEXT NOT NULL, PRIMARY KEY('Id' AUTOINCREMENT) ) ",
   function (error) {
     if (error) {
-      console.log("Error", error)
+      const model = {
+        error: 'Database error'
+      }
+    }
+  },
+)
+db.run(
+  "INSERT INTO MyMusic (Title, Link, ImageLink) VALUES ('Daydream','https://www.youtube.com/watch?v=E5oaa0nJYc8','https://i.scdn.co/image/ab67616d00001e02fff96e613c3b8de376f25ad5')",
+  function (error) {
+    if (error) {
       const model = {
         error: 'Database error'
       }
@@ -70,6 +81,8 @@ app.engine(
   }),
 )
 
+
+//Routing
 app.get('/', function (request, response) {
   const selectAllPostsQuery = 'SELECT * FROM Posts'
   db.all(selectAllPostsQuery, function (error, posts) {
@@ -148,8 +161,6 @@ app.get('/my-music', function (request, response) {
       const model = {
         myMusic
       }
-      console.log(myMusic)
-      console.log(myMusic.length)
       response.render('myMusic.hbs', model)
     }
   })
@@ -233,7 +244,6 @@ app.get('/admin', function (request, response) {
             posts: allPosts,
             music
           }
-          console.log(music)
           response.render('admin.hbs', model)
         })
       }

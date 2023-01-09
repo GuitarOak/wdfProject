@@ -5,7 +5,6 @@
         <h3>
           Create new Post
         </h3>
-
         <div class='form-group'>
           <label class='form-label' for='input-example-3'>
             New Post
@@ -17,7 +16,6 @@
           </button>
         </div>
       </form>
-
       <form method='POST' action='/add-music'>
         <h3>Create new Music</h3>
         <div>
@@ -36,7 +34,6 @@
           Post
         </button>
       </form>
-
       <form method='POST' action='/logout'>
         <button type='submit' class='btn btn-error'>Logout</button>
       </form>
@@ -80,14 +77,12 @@
                   Remove comment
                 </button>
               </div>
-
             </form>
             {{/each}}
             {{/if}}
           </div>
         </div>
       </div>
-
     </div>
     {{/each}}
     {{else}}
@@ -95,12 +90,10 @@
       No posts available.
     </p>
     {{/if}}
-
     <h3>
       Update/Delete existing Music
     </h3>
     {{#if music.length}}
-    {{!-- <div class="myMusicContainer"> --}}
       {{#each music}}
       <div class="myMusicGridItem">
         <div class="myMusicImage"><img src={{ImageLink}} alt="Album cover for " + {{Title}}></div>
@@ -120,8 +113,6 @@
         </form>
       </div>
       {{/each}}
-      {{!--
-    </div> --}}
     {{else}}
     <p>Failed to retrieve music</p>
     {{/if}}
